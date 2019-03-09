@@ -11,9 +11,10 @@ exit 255
 
 get::install::home() {
   if [ -f pom.xml ]; then
-    local tarfile=`ls ./target/*.tar.gz`
-    local home=${tarfile%*-releases.tar.gz}
-    echo $home
+    local base=`cd ./target; pwd`
+    local tarfile=`cd ./target; ls *-releases.tar.gz`
+    local tardir=${tarfile%*-releases.tar.gz}
+    echo $base/$tardir
   else
     echo $(cd ..; pwd)
   fi
@@ -21,11 +22,11 @@ get::install::home() {
 
 cmd::build() {
   mvn clean
-  mvn dependency:copy-dependencies -DoutputDirectory=./target/lib || exit $?
-  mvn package || exit $?
+  mvn dependency:copy-dependencies -DoutputDirectory=./target/lib || return $?
+  mvn package || return $?
   
   local tarfile=`ls ./target/*.tar.gz`
-  tar -zxf $tarfile -C ./target/  || exit $?
+  tar -zxf $tarfile -C ./target/  || return $?
   echo "Run: $0 start"
 }
 
@@ -46,10 +47,10 @@ cmd::stop() {
   pid=`ps -ef | grep com.sycki.restboot.server.Server | grep -v grep | awk '{print $2}'`
   [ x$pid = x ] && {
     echo "restboot is not started."
-    exit 3
+    return 3
   }
   kill "$pid"
-  sleep 3
+  sleep 2
   cmd::status
 }
 
@@ -57,7 +58,7 @@ cmd::status() {
   pid=`ps -ef | grep com.sycki.restboot.server.Server | grep -v grep | awk '{print $2}'`
   [ x$pid = x ] && {
     echo "STOPPED"
-    exit 1
+    return 1
   }
   echo "RUNNING"
 }
@@ -78,6 +79,11 @@ while [ $# -gt 0 ]; do
             shift
             cmd::stop
             ;;
+        restart)
+            shift
+            cmd::stop
+            cmd::start
+            ;;
         status)
             shift
             cmd::status
@@ -91,6 +97,5 @@ while [ $# -gt 0 ]; do
     esac
     shift
 done
-
 
 

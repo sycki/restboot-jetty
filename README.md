@@ -30,8 +30,7 @@ curl -X POST localhost:8080/v1/echo -d 'hello world!'
     ```
 1. 在`application.properties`文件中配置你的数据库地址，然后重启程序：
     ```
-    ./restboot.sh stop
-    ./restboot.sh start
+    ./restboot.sh restart
     ```
 1. 发送一个测试请求：
     ```

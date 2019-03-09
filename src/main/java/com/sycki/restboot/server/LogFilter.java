@@ -57,10 +57,10 @@ public class LogFilter implements Filter {
 
         if (status >= 200 && status < 300) {
             log.info(String.format(logF, method, url, ip, port, status, size, elapsedTime));
-        } else if (status >= 300 && status < 400) {
-            log.warn(String.format(logF, method, url, ip, port, status, size, elapsedTime));
         } else if (status >= 400) {
             log.error(String.format(logF, method, url, ip, port, status, size, elapsedTime));
+        } else {
+            log.warn(String.format(logF, method, url, ip, port, status, size, elapsedTime));
         }
     }
 

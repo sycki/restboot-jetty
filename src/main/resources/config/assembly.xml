@@ -31,9 +31,8 @@
             <directory>src/main/resources/config</directory>
             <outputDirectory>config</outputDirectory>
             <includes>
-                <include>*.conf</include>
+                <include>*.yaml</include>
                 <include>*.properties</include>
-                <include>*.xml</include>
             </includes>
             <lineEnding>unix</lineEnding>
         </fileSet>
