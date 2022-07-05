@@ -35,12 +35,16 @@ public class LogFilter implements Filter {
         int status = response.getStatus();
         String size = response.getHeader("Content-Length");
         if (size == null) {
-            ServletOutputStream out = response.getOutputStream();
-            Field len;
+            ServletOutputStream out;
+            Field _out;
+            Field _len;
             try {
-                len = out.getClass().getDeclaredField("_written");
-                len.setAccessible(true);
-                size = Long.toString(len.getLong(out));
+                _out = org.eclipse.jetty.server.Response.class.getDeclaredField("_out");
+                _out.setAccessible(true);
+                out = (ServletOutputStream)_out.get(servletResponse);
+                _len = out.getClass().getDeclaredField("_written");
+                _len.setAccessible(true);
+                size = Long.toString(_len.getLong(out));
                 response.setHeader("Content-Length", size);
             } catch (NoSuchFieldException e) {
                 size = "0";
